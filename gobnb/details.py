@@ -1,7 +1,6 @@
-import re
 from curl_cffi import requests
-from gobnb.parse import *
-from gobnb.price import *
+from gobnb.parse import parse_body_details_wrapper
+from gobnb.price import get_price
 
 def Get_from_room_url(roomURL: str, currency: str, proxy_url: str):
     data, price_input, cookies = get_from_room_url(roomURL, proxy_url)
@@ -54,7 +53,8 @@ def get_from_room_url(room_url: str, proxy_url: str):
     }
     proxies = {}
     if proxy_url:
-        parsed_proxy_url = requests.utils.requote_uri(proxy_url)
+        parsed_proxy_url = reque
+        sts.utils.requote_uri(proxy_url)
         proxies = {"http": parsed_proxy_url, "https": parsed_proxy_url}
     response = requests.get(room_url, headers=headers, proxies=proxies)
     response.raise_for_status()

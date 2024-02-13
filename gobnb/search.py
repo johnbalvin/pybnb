@@ -1,9 +1,9 @@
-import json
 import gobnb.api as api
 from datetime import datetime
 from urllib.parse import urlencode
-from gobnb.parse import *
+from gobnb.standardize import get_nested_value,standardize_search
 from curl_cffi import requests
+import json
 
 treament = [
 	"feed_map_decouple_m11_treatment",
@@ -19,7 +19,7 @@ def Search_all(check_in:str, check_out:str, ne_lat:float, ne_long:float, sw_lat:
     cursor = ""
     while True:
         results_raw = search(check_in,check_out,ne_lat,ne_long,sw_lat,sw_long,zoom_value,cursor, currency, api_key, proxy_url)
-        results = standardize_search(results_raw)
+        results = standardize_search(results_raw.get("searchResults",[]))
         all_results = all_results + results
         if len(results)==0 or "nextPageCursor" not in results_raw["paginationInfo"] or  results_raw["paginationInfo"]["nextPageCursor"] is None:
             break
@@ -122,6 +122,7 @@ def search(check_in:str, check_out:str, ne_lat:float, ne_long:float, sw_lat:floa
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     }
     proxies = {"http": proxy_url, "https": proxy_url} if proxy_url else None
-    response = requests.post(url_parsed, json = inputData, headers=headers, proxies=proxies, impersonate="chrome110")
+    response = requests.post(url_parsed, json = inputData, headers=headers,  impersonate="chrome110")
     data = response.json()
-    return data["data"]["presentation"]["staysSearch"]["results"]
+    to_return=get_nested_value(data,"data.presentation.staysSearch.results",{})
+    return to_return

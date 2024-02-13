@@ -1,14 +1,11 @@
 import re
 import json
 from bs4 import BeautifulSoup
-from gobnb.standardize import *
-from gobnb.price import *
+from gobnb.standardize import standardize_details
+from gobnb.utils import remove_space
 
 regxApiKey = re.compile(r'"key":".+?"')
-regxPrice = re.compile(r'\d.+')
 regexLanguage = re.compile(r'"language":".+?"')
-regexListing = re.compile(r'"id":"\d+?","listingObjType"')
-regexNumber = re.compile(r'\d+')
 
 
 def parse_body_details_wrapper(body:str):

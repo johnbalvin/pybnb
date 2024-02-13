@@ -1,10 +1,11 @@
-from gobnb.utils import *
+import re
+from gobnb.utils import get_nested_value,parse_price_symbol
 
 regex_number =  re.compile(r'\d+')
             
 def standardize_search(results):
     datas = []
-    for result in get_nested_value(results,"searchResults",[]):
+    for result in results:
         lt = get_nested_value(result,"listing",{})
         pr = get_nested_value(result,"pricingQuote.structuredStayDisplayPrice",{})
         data = {
