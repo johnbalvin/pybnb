@@ -21,7 +21,7 @@ def parse_body_details_wrapper(body:str):
 
 def parse_body_details(body:str):
     soup = BeautifulSoup(body, 'html.parser')
-    data_deferred_state = soup.select("#data-deferred-state")[0].getText()
+    data_deferred_state = soup.select("#data-deferred-state-0")[0].getText()
     html_data = remove_space(data_deferred_state)
     language = regexLanguage.search(body).group()
     language = language.replace('"language":"', "")
