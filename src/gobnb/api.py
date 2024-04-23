@@ -3,7 +3,7 @@ import re
 
 ep = "https://www.airbnb.com"
 
-regx_api_key = re.compile(r'"key":".+?"')
+regx_api_key = re.compile(r'"api_config":{"key":".+?"')
 
 def get(proxy_url: str) -> str:
     headers = {
@@ -31,6 +31,6 @@ def get(proxy_url: str) -> str:
 
     body = response.text
     api_key = regx_api_key.search(body).group()
-    api_key = api_key.replace('"key":"', '')
+    api_key = api_key.replace('"api_config":{"key":"', '')
     api_key = api_key.replace('"', "")
     return api_key
