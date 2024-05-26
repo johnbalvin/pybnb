@@ -53,8 +53,7 @@ def get_from_room_url(room_url: str, proxy_url: str):
     }
     proxies = {}
     if proxy_url:
-        parsed_proxy_url = reque
-        sts.utils.requote_uri(proxy_url)
+        parsed_proxy_url = requests.utils.requote_uri(proxy_url)
         proxies = {"http": parsed_proxy_url, "https": parsed_proxy_url}
     response = requests.get(room_url, headers=headers, proxies=proxies)
     response.raise_for_status()

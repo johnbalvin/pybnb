@@ -1,13 +1,13 @@
 [project]
 
-version = '0.0.7'
+version = '0.0.8'
 name="gobnb"
 description = 'Airbnb scraper in Python'
 authors = [
   { name="John Balvin", email="johnchristian@hotmail.es" },
 ]
 readme= "README.md"
-keywords=['airbnb', 'scraper', 'crawler']
+keywords=['airbnb', 'scraper', 'crawler', 'requests']
 dependencies=['curl_cffi','bs4']
 
 

@@ -6,6 +6,9 @@ regex_number =  re.compile(r'\d+')
 def standardize_search(results):
     datas = []
     for result in results:
+        type_name = get_nested_value(result,"__typename","")
+        if type_name!="StaySearchResult":
+            continue
         lt = get_nested_value(result,"listing",{})
         pr = get_nested_value(result,"pricingQuote.structuredStayDisplayPrice",{})
         data = {
@@ -144,7 +147,6 @@ def standardize_details(meta):
         "co_hosts":[],
         "images":[],
         "location_descriptions":[],
-        "amenities":[],
         "highlights":[],
     }
 

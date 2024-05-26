@@ -3,7 +3,6 @@ from datetime import datetime
 from urllib.parse import urlencode
 from gobnb.standardize import get_nested_value,standardize_search
 from curl_cffi import requests
-import json
 
 treament = [
 	"feed_map_decouple_m11_treatment",
@@ -121,8 +120,11 @@ def search(check_in:str, check_out:str, ne_lat:float, ne_long:float, sw_lat:floa
         "Upgrade-Insecure-Requests": "1",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     }
-    proxies = {"http": proxy_url, "https": proxy_url} if proxy_url else None
-    response = requests.post(url_parsed, json = inputData, headers=headers,  impersonate="chrome110")
+    proxies = {}
+    if proxy_url:
+        parsed_proxy_url = requests.utils.requote_uri(proxy_url)
+        proxies = {"http": parsed_proxy_url, "https": parsed_proxy_url}
+    response = requests.post(url_parsed, json = inputData, headers=headers, proxies=proxies,  impersonate="chrome110")
     data = response.json()
     to_return=get_nested_value(data,"data.presentation.staysSearch.results",{})
     return to_return
