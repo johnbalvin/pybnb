@@ -3,9 +3,9 @@ from curl_cffi import requests
 from gobnb.utils import get_nested_value,remove_space,parse_price_symbol
 from urllib.parse import urlencode
 
-ep = "https://www.airbnb.com/api/v3/StaysPdpSections"
+ep = "https://www.airbnb.com/api/v3/StaysPdpSections/80c7889b4b0027d99ffea830f6c0d4911a6e863a957cbe1044823f0fc746bf1f"
 
-def get_price(product_id: str,impresion_id: str,api_key: str, currency: str, cookies: list, proxy_url: str) -> (float,str,str):
+def get_price(product_id: str, impresion_id: str,api_key: str, currency: str, cookies: list, checkIn: str, checkOut: str, proxy_url: str) -> (str):
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -15,7 +15,7 @@ def get_price(product_id: str,impresion_id: str,api_key: str, currency: str, coo
         entension={
             "persistedQuery": {
                 "version":1,
-                "sha256Hash": "e6a7821cf0f78dfc0baab6fd111027eb2976355f2aecbb84bc2086ee6e57161b",
+                "sha256Hash": "80c7889b4b0027d99ffea830f6c0d4911a6e863a957cbe1044823f0fc746bf1f",
             },
         }
         dataRawExtension = json.dumps(entension)
@@ -23,7 +23,6 @@ def get_price(product_id: str,impresion_id: str,api_key: str, currency: str, coo
             "id": product_id,
             "pdpSectionsRequest": {
                 "adults": "1",
-                "bypassTargetings": None,
                 "bypassTargetings":              False,
                 "categoryTag":                   None,
                 "causeId":                       None,
@@ -53,11 +52,11 @@ def get_price(product_id: str,impresion_id: str,api_key: str, currency: str, coo
                 "staysBookingMigrationEnabled":  False,
                 "translateUgc":                  None,
                 "useNewSectionWrapperApi":       False,
-                "sectionIds": [
-                    "CANCELLATION_POLICY_PICKER_MODAL", "BOOK_IT_CALENDAR_SHEET", "POLICIES_DEFAULT", "BOOK_IT_SIDEBAR", "URGENCY_COMMITMENT_SIDEBAR",
-                    "BOOK_IT_NAV", "BOOK_IT_FLOATING_FOOTER", "EDUCATION_FOOTER_BANNER", "URGENCY_COMMITMENT", "EDUCATION_FOOTER_BANNER_MODAL"],
-                "checkIn":        None,
-                "checkOut":       None,
+                "sectionIds": ["BOOK_IT_FLOATING_FOOTER","POLICIES_DEFAULT","EDUCATION_FOOTER_BANNER_MODAL",
+                        "BOOK_IT_SIDEBAR","URGENCY_COMMITMENT_SIDEBAR","BOOK_IT_NAV","MESSAGE_BANNER","HIGHLIGHTS_DEFAULT",
+                        "EDUCATION_FOOTER_BANNER","URGENCY_COMMITMENT","BOOK_IT_CALENDAR_SHEET","CANCELLATION_POLICY_PICKER_MODAL"],
+                "checkIn":        checkIn,
+                "checkOut":       checkOut,
                 "p3ImpressionId": impresion_id,
             },
         }
@@ -82,11 +81,23 @@ def get_price(product_id: str,impresion_id: str,api_key: str, currency: str, coo
         response.raise_for_status()
 
         data = response.json()
-        for section in get_nested_value(data,"data.presentation.stayProductDetailPage.sections.sections",[]):
-            if get_nested_value(section,"section.__typename","")=="BookItSection":
-                pr=get_nested_value(section,"section.structuredDisplayPrice.primaryLine",{})
-                price=remove_space(pr.get("price",""))
-                qualifier=remove_space(pr.get("qualifier",""))
-                ammount, currency = parse_price_symbol(price)
-                return ammount, currency,qualifier
-        return 0,"",""
+
+        sections = get_nested_value(data,"data.presentation.stayProductDetailPage.sections.sections",{})
+        for section in sections:
+            if section['sectionId'] == "BOOK_IT_SIDEBAR":
+                price_data = get_nested_value(section,"section.structuredDisplayPrice",{})
+                finalData={
+                     "main":{
+                        "price":get_nested_value(price_data,"primaryLine.price",{}),
+                        "discountedPrice":get_nested_value(price_data,"primaryLine.discountedPrice",{}),
+                        "originalPrice":get_nested_value(price_data,"primaryLine.originalPrice",{}),
+                        "qualifier":get_nested_value(price_data,"primaryLine.qualifier",{}),
+                     },
+                     "details":{},
+                }
+                details = get_nested_value(price_data,"explanationData.priceDetails",{})
+                for detail in details:
+                    for item in get_nested_value(detail,"items",{}):
+                         finalData["details"][item["description"]]=item["priceString"]
+                return finalData
+        return {}

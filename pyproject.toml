@@ -1,6 +1,6 @@
 [project]
 
-version = '0.0.8'
+version = '0.0.9'
 name="gobnb"
 description = 'Airbnb scraper in Python'
 authors = [
@@ -8,7 +8,7 @@ authors = [
 ]
 readme= "README.md"
 keywords=['airbnb', 'scraper', 'crawler', 'requests']
-dependencies=['curl_cffi','bs4']
+dependencies=['curl_cffi','bs4','requests']
 
 
 [project.urls]

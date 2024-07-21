@@ -10,6 +10,11 @@ This project is an open-source tool developed in Python for extracting product i
 - Easy to integrate with existing Python projects
 - The code is optimize to work on this format: ```https://www.airbnb.com/rooms/[roomID]```
 
+## Important
+- With the new airbnb changes, if you want to get the price from a room url you need to specify the date range
+the date range is should be on the format year-month-day, if you leave the date range empty, you will get the details but not the price
+
+
 ### Install
 
 ```bash
@@ -21,8 +26,8 @@ $ pip install gobnb
 import gobnb
 import json
 currency="MXN"
-check_in = "2024-08-20"
-check_out = "2024-08-28"
+check_in = "2024-11-02"
+check_out = "2024-11-10"
 ne_lat = -1.03866277790021
 ne_long = -77.53091734683608
 sw_lat = -1.1225978433925647
@@ -47,12 +52,32 @@ f.write(details_data_json)
 f.close()
 ```
 
+### example for getting details and price
+### if you want to get the price you need to send the check in and check out date
 ```Python
 import gobnb
 import json
-room_url="https://www.airbnb.com/rooms/[room_id]"
+room_url="https://www.airbnb.com/rooms/30931885"
 currency="USD"
-data = gobnb.Get_from_room_url(room_url,currency,"")
+check_in = "2024-11-02"
+check_out = "2024-11-10"
+data = gobnb.Get_from_room_url(room_url,currency,check_in,check_out,"")
+jsondata = json.dumps(data)
+f = open("details.json", "w")
+f.write(jsondata)
+f.close()
+```
+
+### example for getting details and NOT price
+### if you won't want the price, you can just leave it empty
+```Python
+import gobnb
+import json
+room_url="https://www.airbnb.com/rooms/33744149"
+currency="USD"
+check_in = ""
+check_out = ""
+data = gobnb.Get_from_room_url(room_url,currency,check_in,check_out,"")
 jsondata = json.dumps(data)
 f = open("details.json", "w")
 f.write(jsondata)
@@ -62,9 +87,11 @@ f.close()
 ```Python
 import gobnb
 import json
-room_id=0#obviously the room id
+room_id=18039593#obviously the room id
 currency="MXN"
-data = gobnb.Get_from_room_id(room_id,currency,"")
+check_in = ""
+check_out = ""
+data = gobnb.Get_from_room_id(room_id,currency,check_in,check_out,"")
 jsondata = json.dumps(data)
 f = open("details.json", "w")
 f.write(jsondata)

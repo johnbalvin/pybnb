@@ -1,10 +1,23 @@
 import gobnb
 import json
 
+def test0():
+    room_id=668146487515150072
+    currency="MXN"
+    check_in = "2024-11-02"
+    check_out = "2024-11-10"
+    data = gobnb.Get_from_room_id(room_id,currency,check_in,check_out,"")
+    jsondata = json.dumps(data)
+    f = open("details.json", "w")
+    f.write(jsondata)
+    f.close()
+
 def test1():
     room_id=668146487515150072
     currency="MXN"
-    data = gobnb.Get_from_room_id(room_id,currency,"")
+    check_in = "2024-11-02"
+    check_out = "2024-11-10"
+    data = gobnb.Get_from_room_id(room_id,currency,check_in,check_out,"")
     jsondata = json.dumps(data)
     f = open("details.json", "w")
     f.write(jsondata)
@@ -13,8 +26,8 @@ def test1():
 
 def test2():
     currency="MXN"
-    check_in = "2024-08-20"
-    check_out = "2024-08-28"
+    check_in = "2024-11-02"
+    check_out = "2024-11-10"
     ne_lat = -1.03866277790021
     ne_long = -77.53091734683608
     sw_lat = -1.1225978433925647
@@ -26,4 +39,4 @@ def test2():
     f.write(jsondata)
     f.close()
     
-test2()
+test1()

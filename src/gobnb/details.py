@@ -2,38 +2,36 @@ from curl_cffi import requests
 from gobnb.parse import parse_body_details_wrapper
 from gobnb.price import get_price
 
-def Get_from_room_url(roomURL: str, currency: str, proxy_url: str):
+def Get_from_room_url(roomURL: str, currency: str, check_in: str, check_out: str, proxy_url: str):
     data, price_input, cookies = get_from_room_url(roomURL, proxy_url)
-    ammount, currency, qualifier = get_price(price_input["product_id"],price_input["impression_id"],price_input["api_key"],currency, cookies, proxy_url)
-    data["price"] = {
-        "ammount":ammount,
-        "currency_symbol":currency,
-        "qualifier": qualifier
-    }
+    if check_in is None or check_in == "" or check_out is None or check_out == "":
+        return data
+    dataFullPrice = get_price(price_input["product_id"],price_input["impression_id"],price_input["api_key"],currency, cookies, check_in, check_out, proxy_url)
+    data["price"] = dataFullPrice
     return data
-
-def Get_from_room_id(room_id: int, currency: str, proxy_url: str):
+def Get_from_room_id(room_id: int, currency: str, check_in: str, check_out: str, proxy_url: str):
     room_url = f"https://www.airbnb.com/rooms/{room_id}"
     data, price_input, cookies = get_from_room_url(room_url, proxy_url)
-    ammount, currency, qualifier = get_price(price_input["product_id"],price_input["impression_id"],price_input["api_key"],currency, cookies, proxy_url)
-    data["price"] = {
-        "ammount":ammount,
-        "currency_symbol":currency,
-        "qualifier": qualifier
-    }
+    if check_in is None or check_in == "" or check_out is None or check_out == "":
+        return data
+    dataFullPrice = get_price(price_input["product_id"],price_input["impression_id"],price_input["api_key"],currency, cookies, check_in, check_out, proxy_url)
+    data["price"] = dataFullPrice
     return data
 
-def Get_from_room_id_and_domain(room_id: int, domain: str, currency: str, proxy_url: str):
+def Get_from_room_id_and_domain(room_id: int, domain: str, currency: str, check_in: str, check_out: str, proxy_url: str):
     room_url = f"https://{domain}/rooms/{room_id}"
     data, price_input, cookies = get_from_room_url(room_url, proxy_url)
-    ammount, currency, qualifier = get_price(price_input["product_id"],price_input["impression_id"],price_input["api_key"],currency, cookies, proxy_url)
-    data["price"] = {
-        "ammount":ammount,
-        "currency_symbol":currency,
-        "qualifier": qualifier
-    }
+    if check_in is None or check_in == "" or check_out is None or check_out == "":
+        return data
+    dataFullPrice = get_price(price_input["product_id"],price_input["impression_id"],price_input["api_key"],currency, cookies, check_in, check_out, proxy_url)
+    data["price"] = dataFullPrice
     return data
 
+def Get_price_by_url(roomURL: str, currency: str, check_in: str, check_out: str, proxy_url: str):
+    data, price_input, cookies = get_from_room_url(roomURL, proxy_url)
+    dataFullPrice = get_price(price_input["product_id"],price_input["impression_id"],price_input["api_key"],currency, cookies, check_in, check_out, proxy_url)
+    data["price"] = dataFullPrice
+    return data
 
 def get_from_room_url(room_url: str, proxy_url: str):
     headers = {
