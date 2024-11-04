@@ -1,6 +1,6 @@
 [project]
 
-version = '0.0.11'
+version = '0.0.12'
 name="gobnb"
 description = 'Airbnb scraper in Python'
 authors = [
@@ -12,4 +12,4 @@ dependencies=['curl_cffi','bs4','requests']
 
 
 [project.urls]
-Homepage='https://github.com/johnbalvin/pybnb'
+Homepage='https://github.com/johnbalvin/pyairbnb'
